@@ -1,0 +1,767 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="kafouriModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ClosedItems">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="CloseId" Type="bigint" />
+          <Property Name="OrderItemId" Type="bigint" />
+          <Property Name="ItemPrice" Type="nvarchar(max)" />
+          <Property Name="OrderedQuantityItems" Type="nvarchar(max)" />
+          <Property Name="OrderedPackages" Type="nvarchar(max)" />
+          <Property Name="TotalPrice" Type="nvarchar(max)" />
+          <Property Name="RemaindedQuantityToCl" Type="nvarchar(max)" />
+          <Property Name="RemianedPriceToClose" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="ClosedOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="totalPrice" Type="nvarchar(max)" />
+          <Property Name="OrderId" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderItems">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="OrderId" Type="bigint" Nullable="false" />
+          <Property Name="vendorItemId" Type="bigint" Nullable="false" />
+          <Property Name="Price" Type="nvarchar(max)" />
+          <Property Name="ItemPrice" Type="nvarchar(max)" />
+          <Property Name="NewPrice" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="NewItemPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Status" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="VendorId" Type="bigint" Nullable="false" />
+          <Property Name="OpendDate" Type="date" />
+          <Property Name="Close Date" Type="date" />
+          <Property Name="CloseTime" Type="time" Precision="7" />
+          <Property Name="Status" Type="nvarchar(max)" />
+          <Property Name="AccountNo" Type="nvarchar(max)" />
+          <Property Name="AccountName" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="RecievePlace" Type="nvarchar(max)" />
+          <Property Name="RecievePerson" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="RequestedOrderInvoices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" Nullable="false" />
+          <Property Name="requestId" Type="bigint" />
+          <Property Name="ScanOfInvoice" Type="varbinary(max)" Nullable="false" />
+          <Property Name="ScanOfInvoicePath" Type="nvarchar(max)" />
+          <Property Name="fileName" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="RequestOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="OrderId" Type="bigint" Nullable="false" />
+          <Property Name="TotalPrice" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="ScanOfInvoice" Type="varbinary(max)" Nullable="false" />
+          <Property Name="Status" Type="varchar(max)" />
+          <Property Name="RequesterName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="RequesterBlockNo" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="RequesterPhone" Type="nvarchar(max)" />
+          <Property Name="EnteredBy" Type="nvarchar(max)" />
+          <Property Name="ScanOfInvoicePath" Type="nvarchar(max)" />
+          <Property Name="fileName" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="RequestOrderItems">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="RequestId" Type="bigint" Nullable="false" />
+          <Property Name="ItemId" Type="bigint" Nullable="false" />
+          <Property Name="Quantity" Type="bigint" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="NewPrice" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="Vendor">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Status" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="VendorItems">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="VendorId" Type="bigint" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Package" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ItemsPerPackage" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_ClosedItems_ClosedI">
+          <End Role="ClosedOrder" Type="Self.ClosedOrder" Multiplicity="0..1" />
+          <End Role="ClosedItems" Type="Self.ClosedItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClosedOrder">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ClosedItems">
+              <PropertyRef Name="CloseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClosedItems_OrderItems">
+          <End Role="OrderItems" Type="Self.OrderItems" Multiplicity="0..1" />
+          <End Role="ClosedItems" Type="Self.ClosedItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderItems">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ClosedItems">
+              <PropertyRef Name="OrderItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClosedOrder_Orders">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="1" />
+          <End Role="ClosedOrder" Type="Self.ClosedOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ClosedOrder">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderItems_Order">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="1" />
+          <End Role="OrderItems" Type="Self.OrderItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="OrderItems">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderItems_tems">
+          <End Role="VendorItems" Type="Self.VendorItems" Multiplicity="1" />
+          <End Role="OrderItems" Type="Self.OrderItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VendorItems">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="OrderItems">
+              <PropertyRef Name="vendorItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_Vendors">
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="VendorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RequestedOrderInvoices_Requested">
+          <End Role="RequestOrder" Type="Self.RequestOrder" Multiplicity="0..1" />
+          <End Role="RequestedOrderInvoices" Type="Self.RequestedOrderInvoices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RequestOrder">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RequestedOrderInvoices">
+              <PropertyRef Name="requestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RequestOrder_Request">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="1" />
+          <End Role="RequestOrder" Type="Self.RequestOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RequestOrder">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RequestOrderItems_Request">
+          <End Role="RequestOrder" Type="Self.RequestOrder" Multiplicity="1" />
+          <End Role="RequestOrderItems" Type="Self.RequestOrderItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RequestOrder">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RequestOrderItems">
+              <PropertyRef Name="RequestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RequestOrderItems_tems">
+          <End Role="OrderItems" Type="Self.OrderItems" Multiplicity="1" />
+          <End Role="RequestOrderItems" Type="Self.RequestOrderItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderItems">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RequestOrderItems">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VendorItems_Vendor">
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="1" />
+          <End Role="VendorItems" Type="Self.VendorItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="VendorItems">
+              <PropertyRef Name="VendorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="kafouriModelStoreContainer">
+          <EntitySet Name="ClosedItems" EntityType="Self.ClosedItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClosedOrder" EntityType="Self.ClosedOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderItems" EntityType="Self.OrderItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RequestedOrderInvoices" EntityType="Self.RequestedOrderInvoices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RequestOrder" EntityType="Self.RequestOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RequestOrderItems" EntityType="Self.RequestOrderItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Vendor" EntityType="Self.Vendor" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VendorItems" EntityType="Self.VendorItems" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ClosedItems_ClosedI" Association="Self.FK_ClosedItems_ClosedI">
+            <End Role="ClosedOrder" EntitySet="ClosedOrder" />
+            <End Role="ClosedItems" EntitySet="ClosedItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClosedItems_OrderItems" Association="Self.FK_ClosedItems_OrderItems">
+            <End Role="OrderItems" EntitySet="OrderItems" />
+            <End Role="ClosedItems" EntitySet="ClosedItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClosedOrder_Orders" Association="Self.FK_ClosedOrder_Orders">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="ClosedOrder" EntitySet="ClosedOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderItems_Order" Association="Self.FK_OrderItems_Order">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OrderItems" EntitySet="OrderItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderItems_tems" Association="Self.FK_OrderItems_tems">
+            <End Role="VendorItems" EntitySet="VendorItems" />
+            <End Role="OrderItems" EntitySet="OrderItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_Vendors" Association="Self.FK_Orders_Vendors">
+            <End Role="Vendor" EntitySet="Vendor" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RequestedOrderInvoices_Requested" Association="Self.FK_RequestedOrderInvoices_Requested">
+            <End Role="RequestOrder" EntitySet="RequestOrder" />
+            <End Role="RequestedOrderInvoices" EntitySet="RequestedOrderInvoices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RequestOrder_Request" Association="Self.FK_RequestOrder_Request">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="RequestOrder" EntitySet="RequestOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RequestOrderItems_Request" Association="Self.FK_RequestOrderItems_Request">
+            <End Role="RequestOrder" EntitySet="RequestOrder" />
+            <End Role="RequestOrderItems" EntitySet="RequestOrderItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RequestOrderItems_tems" Association="Self.FK_RequestOrderItems_tems">
+            <End Role="OrderItems" EntitySet="OrderItems" />
+            <End Role="RequestOrderItems" EntitySet="RequestOrderItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VendorItems_Vendor" Association="Self.FK_VendorItems_Vendor">
+            <End Role="Vendor" EntitySet="Vendor" />
+            <End Role="VendorItems" EntitySet="VendorItems" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="kafouriModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Vendor">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="VendorItems" Relationship="Self.FK_VendorItems_Vendor" FromRole="Vendor" ToRole="VendorItems" />
+          <NavigationProperty Name="Orders" Relationship="kafouriModel.FK_Orders_Vendors" FromRole="Vendor" ToRole="Order" />
+        </EntityType>
+        <EntityType Name="VendorItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="VendorId" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Package" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ItemsPerPackage" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Vendor" Relationship="Self.FK_VendorItems_Vendor" FromRole="VendorItems" ToRole="Vendor" />
+          <NavigationProperty Name="OrderItems" Relationship="kafouriModel.FK_OrderItems_tems" FromRole="VendorItem" ToRole="OrderItem" />
+        </EntityType>
+        <Association Name="FK_VendorItems_Vendor">
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="1" />
+          <End Role="VendorItems" Type="Self.VendorItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="VendorItems">
+              <PropertyRef Name="VendorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="kafouriEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Vendors" EntityType="Self.Vendor" />
+          <EntitySet Name="VendorItems" EntityType="Self.VendorItem" />
+          <AssociationSet Name="FK_VendorItems_Vendor" Association="Self.FK_VendorItems_Vendor">
+            <End Role="Vendor" EntitySet="Vendors" />
+            <End Role="VendorItems" EntitySet="VendorItems" />
+          </AssociationSet>
+          <EntitySet Name="OrderItems" EntityType="kafouriModel.OrderItem" />
+          <AssociationSet Name="FK_OrderItems_tems" Association="kafouriModel.FK_OrderItems_tems">
+            <End Role="VendorItem" EntitySet="VendorItems" />
+            <End Role="OrderItem" EntitySet="OrderItems" />
+          </AssociationSet>
+          <EntitySet Name="Orders" EntityType="kafouriModel.Order" />
+          <AssociationSet Name="FK_OrderItems_Order" Association="kafouriModel.FK_OrderItems_Order">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="OrderItem" EntitySet="OrderItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_Vendors" Association="kafouriModel.FK_Orders_Vendors">
+            <End Role="Vendor" EntitySet="Vendors" />
+            <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
+          <EntitySet Name="RequestOrderItems" EntityType="kafouriModel.RequestOrderItem" />
+          <AssociationSet Name="FK_RequestOrderItems_tems" Association="kafouriModel.FK_RequestOrderItems_tems">
+            <End Role="OrderItem" EntitySet="OrderItems" />
+            <End Role="RequestOrderItem" EntitySet="RequestOrderItems" />
+          </AssociationSet>
+          <EntitySet Name="RequestOrders" EntityType="kafouriModel.RequestOrder" />
+          <AssociationSet Name="FK_RequestOrder_Request" Association="kafouriModel.FK_RequestOrder_Request">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="RequestOrder" EntitySet="RequestOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RequestOrderItems_Request" Association="kafouriModel.FK_RequestOrderItems_Request">
+            <End Role="RequestOrder" EntitySet="RequestOrders" />
+            <End Role="RequestOrderItem" EntitySet="RequestOrderItems" />
+          </AssociationSet>
+          <EntitySet Name="RequestedOrderInvoices" EntityType="kafouriModel.RequestedOrderInvoice" />
+          <AssociationSet Name="FK_RequestedOrderInvoices_Requested" Association="kafouriModel.FK_RequestedOrderInvoices_Requested">
+            <End Role="RequestOrder" EntitySet="RequestOrders" />
+            <End Role="RequestedOrderInvoice" EntitySet="RequestedOrderInvoices" />
+          </AssociationSet>
+          <EntitySet Name="ClosedItems" EntityType="kafouriModel.ClosedItem" />
+          <EntitySet Name="ClosedOrders" EntityType="kafouriModel.ClosedOrder" />
+          <AssociationSet Name="FK_ClosedItems_ClosedI" Association="kafouriModel.FK_ClosedItems_ClosedI">
+            <End Role="ClosedOrder" EntitySet="ClosedOrders" />
+            <End Role="ClosedItem" EntitySet="ClosedItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClosedItems_OrderItems" Association="kafouriModel.FK_ClosedItems_OrderItems">
+            <End Role="OrderItem" EntitySet="OrderItems" />
+            <End Role="ClosedItem" EntitySet="ClosedItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClosedOrder_Orders" Association="kafouriModel.FK_ClosedOrder_Orders">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="ClosedOrder" EntitySet="ClosedOrders" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="OrderItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="OrderId" Type="Int64" Nullable="false" />
+          <Property Name="vendorItemId" Type="Int64" Nullable="false" />
+          <Property Name="Price" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ItemPrice" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="VendorItem" Relationship="kafouriModel.FK_OrderItems_tems" FromRole="OrderItem" ToRole="VendorItem" />
+          <NavigationProperty Name="Order" Relationship="kafouriModel.FK_OrderItems_Order" FromRole="OrderItem" ToRole="Order" />
+          <NavigationProperty Name="RequestOrderItems" Relationship="kafouriModel.FK_RequestOrderItems_tems" FromRole="OrderItem" ToRole="RequestOrderItem" />
+          <NavigationProperty Name="ClosedItems" Relationship="kafouriModel.FK_ClosedItems_OrderItems" FromRole="OrderItem" ToRole="ClosedItem" />
+          <Property Name="NewPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="NewItemPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_OrderItems_tems">
+          <End Type="kafouriModel.VendorItem" Role="VendorItem" Multiplicity="1" />
+          <End Type="kafouriModel.OrderItem" Role="OrderItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VendorItem">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="OrderItem">
+              <PropertyRef Name="vendorItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="VendorId" Type="Int64" Nullable="false" />
+          <Property Name="OpendDate" Type="DateTime" Precision="0" />
+          <Property Name="Close_Date" Type="DateTime" Precision="0" />
+          <Property Name="CloseTime" Type="Time" Precision="7" />
+          <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AccountNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AccountName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RecievePlace" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RecievePerson" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="OrderItems" Relationship="kafouriModel.FK_OrderItems_Order" FromRole="Order" ToRole="OrderItem" />
+          <NavigationProperty Name="Vendor" Relationship="kafouriModel.FK_Orders_Vendors" FromRole="Order" ToRole="Vendor" />
+          <NavigationProperty Name="RequestOrders" Relationship="kafouriModel.FK_RequestOrder_Request" FromRole="Order" ToRole="RequestOrder" />
+          <NavigationProperty Name="ClosedOrders" Relationship="kafouriModel.FK_ClosedOrder_Orders" FromRole="Order" ToRole="ClosedOrder" />
+        </EntityType>
+        <Association Name="FK_OrderItems_Order">
+          <End Type="kafouriModel.Order" Role="Order" Multiplicity="1" />
+          <End Type="kafouriModel.OrderItem" Role="OrderItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="OrderItem">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_Vendors">
+          <End Type="kafouriModel.Vendor" Role="Vendor" Multiplicity="1" />
+          <End Type="kafouriModel.Order" Role="Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="VendorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="RequestOrderItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="RequestId" Type="Int64" Nullable="false" />
+          <Property Name="ItemId" Type="Int64" Nullable="false" />
+          <Property Name="Quantity" Type="Int64" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <NavigationProperty Name="OrderItem" Relationship="kafouriModel.FK_RequestOrderItems_tems" FromRole="RequestOrderItem" ToRole="OrderItem" />
+          <NavigationProperty Name="RequestOrder" Relationship="kafouriModel.FK_RequestOrderItems_Request" FromRole="RequestOrderItem" ToRole="RequestOrder" />
+          <Property Name="NewPrice" Type="Decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <Association Name="FK_RequestOrderItems_tems">
+          <End Type="kafouriModel.OrderItem" Role="OrderItem" Multiplicity="1" />
+          <End Type="kafouriModel.RequestOrderItem" Role="RequestOrderItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderItem">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RequestOrderItem">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="RequestOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
+          <Property Name="OrderId" Type="Int64" Nullable="false" />
+          <Property Name="TotalPrice" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="ScanOfInvoice" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="RequesterName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RequesterBlockNo" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RequesterPhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EnteredBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ScanOfInvoicePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="fileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Order" Relationship="kafouriModel.FK_RequestOrder_Request" FromRole="RequestOrder" ToRole="Order" />
+          <NavigationProperty Name="RequestOrderItems" Relationship="kafouriModel.FK_RequestOrderItems_Request" FromRole="RequestOrder" ToRole="RequestOrderItem" />
+          <NavigationProperty Name="RequestedOrderInvoices" Relationship="kafouriModel.FK_RequestedOrderInvoices_Requested" FromRole="RequestOrder" ToRole="RequestedOrderInvoice" />
+        </EntityType>
+        <Association Name="FK_RequestOrder_Request">
+          <End Type="kafouriModel.Order" Role="Order" Multiplicity="1" />
+          <End Type="kafouriModel.RequestOrder" Role="RequestOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RequestOrder">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RequestOrderItems_Request">
+          <End Type="kafouriModel.RequestOrder" Role="RequestOrder" Multiplicity="1" />
+          <End Type="kafouriModel.RequestOrderItem" Role="RequestOrderItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RequestOrder">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RequestOrderItem">
+              <PropertyRef Name="RequestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="RequestedOrderInvoice">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="requestId" Type="Int64" />
+          <Property Name="ScanOfInvoice" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="ScanOfInvoicePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="fileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="RequestOrder" Relationship="kafouriModel.FK_RequestedOrderInvoices_Requested" FromRole="RequestedOrderInvoice" ToRole="RequestOrder" />
+        </EntityType>
+        <Association Name="FK_RequestedOrderInvoices_Requested">
+          <End Type="kafouriModel.RequestOrder" Role="RequestOrder" Multiplicity="0..1" />
+          <End Type="kafouriModel.RequestedOrderInvoice" Role="RequestedOrderInvoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RequestOrder">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RequestedOrderInvoice">
+              <PropertyRef Name="requestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ClosedItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="CloseId" Type="Int64" />
+          <Property Name="OrderItemId" Type="Int64" />
+          <Property Name="ItemPrice" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OrderedQuantityItems" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OrderedPackages" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TotalPrice" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RemaindedQuantityToCl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RemianedPriceToClose" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ClosedOrder" Relationship="kafouriModel.FK_ClosedItems_ClosedI" FromRole="ClosedItem" ToRole="ClosedOrder" />
+          <NavigationProperty Name="OrderItem" Relationship="kafouriModel.FK_ClosedItems_OrderItems" FromRole="ClosedItem" ToRole="OrderItem" />
+        </EntityType>
+        <EntityType Name="ClosedOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="totalPrice" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OrderId" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="ClosedItems" Relationship="kafouriModel.FK_ClosedItems_ClosedI" FromRole="ClosedOrder" ToRole="ClosedItem" />
+          <NavigationProperty Name="Order" Relationship="kafouriModel.FK_ClosedOrder_Orders" FromRole="ClosedOrder" ToRole="Order" />
+        </EntityType>
+        <Association Name="FK_ClosedItems_ClosedI">
+          <End Type="kafouriModel.ClosedOrder" Role="ClosedOrder" Multiplicity="0..1" />
+          <End Type="kafouriModel.ClosedItem" Role="ClosedItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClosedOrder">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ClosedItem">
+              <PropertyRef Name="CloseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClosedItems_OrderItems">
+          <End Type="kafouriModel.OrderItem" Role="OrderItem" Multiplicity="0..1" />
+          <End Type="kafouriModel.ClosedItem" Role="ClosedItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderItem">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ClosedItem">
+              <PropertyRef Name="OrderItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClosedOrder_Orders">
+          <End Type="kafouriModel.Order" Role="Order" Multiplicity="1" />
+          <End Type="kafouriModel.ClosedOrder" Role="ClosedOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ClosedOrder">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="kafouriModelStoreContainer" CdmEntityContainer="kafouriEntities">
+          <EntitySetMapping Name="Vendors">
+            <EntityTypeMapping TypeName="kafouriModel.Vendor">
+              <MappingFragment StoreEntitySet="Vendor">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VendorItems">
+            <EntityTypeMapping TypeName="kafouriModel.VendorItem">
+              <MappingFragment StoreEntitySet="VendorItems">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="VendorId" ColumnName="VendorId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Package" ColumnName="Package" />
+                <ScalarProperty Name="ItemsPerPackage" ColumnName="ItemsPerPackage" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderItems">
+            <EntityTypeMapping TypeName="kafouriModel.OrderItem">
+              <MappingFragment StoreEntitySet="OrderItems">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="NewItemPrice" ColumnName="NewItemPrice" />
+                <ScalarProperty Name="NewPrice" ColumnName="NewPrice" />
+                <ScalarProperty Name="ItemPrice" ColumnName="ItemPrice" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="vendorItemId" ColumnName="vendorItemId" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="kafouriModel.Order">
+              <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="RecievePerson" ColumnName="RecievePerson" />
+                <ScalarProperty Name="RecievePlace" ColumnName="RecievePlace" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="AccountName" ColumnName="AccountName" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CloseTime" ColumnName="CloseTime" />
+                <ScalarProperty Name="Close_Date" ColumnName="Close Date" />
+                <ScalarProperty Name="OpendDate" ColumnName="OpendDate" />
+                <ScalarProperty Name="VendorId" ColumnName="VendorId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RequestOrderItems">
+            <EntityTypeMapping TypeName="kafouriModel.RequestOrderItem">
+              <MappingFragment StoreEntitySet="RequestOrderItems">
+                <ScalarProperty Name="NewPrice" ColumnName="NewPrice" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="RequestId" ColumnName="RequestId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RequestOrders">
+            <EntityTypeMapping TypeName="kafouriModel.RequestOrder">
+              <MappingFragment StoreEntitySet="RequestOrder">
+                <ScalarProperty Name="fileName" ColumnName="fileName" />
+                <ScalarProperty Name="ScanOfInvoicePath" ColumnName="ScanOfInvoicePath" />
+                <ScalarProperty Name="EnteredBy" ColumnName="EnteredBy" />
+                <ScalarProperty Name="RequesterPhone" ColumnName="RequesterPhone" />
+                <ScalarProperty Name="RequesterBlockNo" ColumnName="RequesterBlockNo" />
+                <ScalarProperty Name="RequesterName" ColumnName="RequesterName" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ScanOfInvoice" ColumnName="ScanOfInvoice" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RequestedOrderInvoices">
+            <EntityTypeMapping TypeName="kafouriModel.RequestedOrderInvoice">
+              <MappingFragment StoreEntitySet="RequestedOrderInvoices">
+                <ScalarProperty Name="fileName" ColumnName="fileName" />
+                <ScalarProperty Name="ScanOfInvoicePath" ColumnName="ScanOfInvoicePath" />
+                <ScalarProperty Name="ScanOfInvoice" ColumnName="ScanOfInvoice" />
+                <ScalarProperty Name="requestId" ColumnName="requestId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClosedItems">
+            <EntityTypeMapping TypeName="kafouriModel.ClosedItem">
+              <MappingFragment StoreEntitySet="ClosedItems">
+                <ScalarProperty Name="RemianedPriceToClose" ColumnName="RemianedPriceToClose" />
+                <ScalarProperty Name="RemaindedQuantityToCl" ColumnName="RemaindedQuantityToCl" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="OrderedPackages" ColumnName="OrderedPackages" />
+                <ScalarProperty Name="OrderedQuantityItems" ColumnName="OrderedQuantityItems" />
+                <ScalarProperty Name="ItemPrice" ColumnName="ItemPrice" />
+                <ScalarProperty Name="OrderItemId" ColumnName="OrderItemId" />
+                <ScalarProperty Name="CloseId" ColumnName="CloseId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClosedOrders">
+            <EntityTypeMapping TypeName="kafouriModel.ClosedOrder">
+              <MappingFragment StoreEntitySet="ClosedOrder">
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="totalPrice" ColumnName="totalPrice" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

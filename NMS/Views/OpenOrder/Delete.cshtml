@@ -1,0 +1,46 @@
+﻿@using KOrders.Core.Resources
+@model KOrders.Data.Order
+
+@{
+    ViewBag.Title = CommonRes.Delete;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@CommonRes.Details</h2>
+
+
+
+<div class="form-horizontal">
+    <h4>Orderes</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Vendor.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Vendor.Name)
+        </dd>
+
+        <dt>
+            Items
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OrderItems.Count)
+        </dd>
+
+
+
+    </dl>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+}

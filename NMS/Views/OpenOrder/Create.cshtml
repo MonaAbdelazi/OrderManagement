@@ -1,0 +1,235 @@
+﻿@using KOrders.Core.Resources
+@model KOrders.Data.Order
+
+@{
+    ViewBag.Title = CommonRes.Create;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@CommonRes.Create</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+     <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">فتح طلبية</h2>
+                </div>
+
+                <div class="panel-body">
+
+                    @Html.ValidationSummary(true)
+
+                    <hr />
+
+                    <div class="form-group row">
+
+                        <div class="col-lg-3">
+                            @Html.Label(NMSRes.Supp_Name)
+
+                            @Html.DropDownListFor(model => model.VendorId,null, CommonRes.SelectDropDown, new { @class = "form-control", @onchange = "getItems();" })
+                        </div>
+                        
+                        <div class="col-lg-3">
+                            تاريخ فتح الطلبية
+
+                            @Html.TextBoxFor(m=>m.OpendDate, null, new { @class = "form-control" ,type="date"  })
+                        </div>
+                        <div class="col-lg-3">
+                            زمن فتح الطلبية
+
+                            @Html.TextBox("openTime", null, new { @class = "form-control", type = "time" })
+                        </div>
+                        <div class="col-lg-3">
+                            تاريخ قفل الطلبية
+
+                            @Html.TextBoxFor(m => m.Close_Date, null,  new { @class = "form-control", type = "date" })
+                        </div>
+                        <div class="col-lg-3">
+                            زمن  قفل الطلبية
+
+                            @Html.TextBoxFor(m=>m.CloseTime, null, new { @class = "form-control", type = "time" })
+                        </div>
+                        <div class="col-lg-3">
+                            رقم الحساب
+
+                            @Html.TextBoxFor(m => m.AccountNo, null, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-3">
+                            اسم الحساب
+
+                            @Html.TextBoxFor(m => m.AccountName, null, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-3">
+                           مكان الاستلام
+
+                            @Html.TextBoxFor(m => m.RecievePlace, null, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-3">
+                            اسم المستلم
+
+                            @Html.TextBoxFor(m => m.RecievePerson, null, new { @class = "form-control" })
+                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+         <div class="panel panel-light-blue">
+
+
+             <div class="panel-heading">
+
+                 <h2 class="panel-title">مكونات الطلبية</h2>
+             </div>
+
+
+             <div class="panel-body">
+                 <hr />
+
+                 <div class="form-group row">
+                     <div class="col-lg-3">
+                         @Html.Label(NMSRes.itemname)
+
+                         @Html.DropDownList("ItemId", null, CommonRes.SelectDropDown, new { @class = "form-control", @onchange = "ItemSelected();" })
+                     </div>
+
+                     <div class="col-lg-3">
+                         سعر الكرتونة
+
+
+                         @Html.TextBox("Price", string.Empty, new { @class = "form-control", @id= "Price", @onchange = "ItemSelected();", onkeypress = "return ValidateNumber(event);" })
+
+                         <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender1" FilterType="Numbers" TargetControlID="Price" ValidChars="1234567890+" BehaviorID="_content_FilteredTextBoxExtender1" />
+
+                     </div>
+                   
+                     <div class="col-lg-3">
+                         سعر القطعة
+
+
+                         @Html.TextBox("ItemPrice", "0", new { @class = "form-control",@id= "ItemPrice", @readonly= "readonly", @onchange = "ItemPriceChanged();" })
+                     
+                     </div>
+                 </div>
+                 <div>
+                     <center>
+                         <p>
+                             <input type="button" value="@CommonRes.add" id="Add" class="btn btn-success hvr-bounce-in" onclick="add(this.id);" />
+                         </p>
+                     </center>
+                 </div>
+
+
+
+                 <div id="outputTable">
+
+                 </div>
+
+               
+
+
+
+             </div>
+         </div>
+
+
+                </div>
+                
+             
+                <div class="form-group">
+                    <center class="mgtp">
+                        <input type="submit" value="@CommonRes.Button_Save" class="btn btn-primary hvr-bounce-in" />
+                        &nbsp;
+                        @Html.ActionLink(CommonRes.BackToList, "Index", null, new { @class = "btn btn-warning hvr-bounce-in" })
+                    </center>
+                </div>
+}
+<div>
+    @Html.ActionLink(CommonRes.BackToList, "Index")
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#ItemPrice").change(function ()){
+                if (!isNaN($(this).val()) || this.val() < 0) {
+                    $(this).val(0);
+                    $("#valLable").show();
+
+                }
+                else {
+                    $("#valLable").hide();
+                }
+            }
+        })
+        function getItems() {
+
+            GetDropDownData({ VendorId: $('#VendorId').val() }, "/OpenOrder/VendorSelected", "ItemId", " ", true);
+
+        }
+        function ItemPriceChanged(_this){
+            if (_this.val() != null) {
+                var num = new number(_this.val());
+                if (num < 0) {
+                    _this.val(0);
+
+                }
+            } 
+
+        }
+        function ItemSelected() {
+
+            var target = $('#TotalPrice');
+            var input = { ItemId: $('#ItemId').val(), Price: $('#Price').val()};
+            $.ajax({
+                url: '/OpenOrder/ItemSelected',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $('#ItemPrice').val(data);
+
+                },
+                error: function () {
+                }
+            });
+
+           
+
+        }
+        function add(_ddlDesc) {
+
+            var target = $('#outputTable');
+            var input = { ItemId: $('#ItemId').val(), Price: $('#Price').val(), ItemPrice: $('#ItemPrice').val() };
+            $.ajax({
+                url: '/OpenOrder/Add',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    target.html(data);
+
+                },
+                error: function () {
+                }
+            });
+
+            $('#ItemId').val("");
+            $('#Price').val("");
+            $('#ItemPrice').val("");
+                 
+        }
+        function ValidateNumber(e) {
+            var evt = (e) ? e : window.event;
+            var charCode = (evt.keyCode) ? evt.keyCode : evt.which;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        };
+    </script>
+}

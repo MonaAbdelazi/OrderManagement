@@ -1,0 +1,221 @@
+﻿@using KOrders.Core.Resources
+@model IEnumerable<NMS.Utility.VMOrderItem>
+
+@{
+    var details = (List<NMS.Utility.VMOrderItem>)Session["Supplier"];
+}
+<style type="text/css">
+    .paging-nav {
+        text-align: right;
+        padding-top: 2px;
+    }
+
+        .paging-nav a {
+            margin: auto 1px;
+            text-decoration: none;
+            display: inline-block;
+            padding: 1px 7px;
+            background: #91b9e6;
+            color: white;
+            border-radius: 3px;
+        }
+
+        .paging-nav .selected-page {
+            background: #187ed5;
+            font-weight: bold;
+        }
+
+    .paging-nav,
+    #tableData {
+        margin: 0 auto;
+        font-family: Arial, sans-serif;
+    }
+</style>
+<div>
+   
+    <div class="col-lg-3">
+السعر الكلي
+        @Html.Label(Model.ToArray()[0].totaprice.ToString(), new { @class = "form-control", type = "date", @readonly = "readonly" })
+    </div>
+   
+   
+</div>
+<div id="fdetails" class="controls">
+    <hr />
+    <table id="tableData" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>
+                    #
+                </th>
+                @*<th>
+                    @Html.DisplayName(NMSRes.Name)
+                </th>*@
+                <th>
+                    @Html.Label(NMSRes.itemname, new { @style = "width:100px" })
+                </th>
+                <th>
+الكمية المطلوبة عبوات                
+                </th>
+                <th>
+سعر العبوة                </th>
+                <th>
+الكمية المطلوبة بكتات                
+                </th>
+                
+                <th>
+                    الكمية المتبقية
+                </th>
+                <th>
+                    السعر المتبقية
+                </th>
+
+
+</tr>
+        </thead>
+        <tbody>
+
+            @for (int i = 0; i < details.ToArray().Length; i++)
+            {
+                <div class="list-item form-inline">
+
+                    <tr>
+                        <td>
+
+                            @*
+            <input id="details[@i].ID" name="details[@i].ID" class="form-control" type="hidden" value=@details[@i].ID>
+            <input id="details[@i].RequestId" name="details[@i].RequestId" class="form-control" type="hidden" value=@details[@i].RequestId>*@
+                            <input id="details[@i].ItemId" name="details[@i].ItemId" class="form-control" type="hidden" value=@details[@i].ItemId>
+                            <input id="details[@i].totaprice" name="details[@i].totaprice" class="form-control" type="hidden" value=@details[@i].totaprice>
+                            <input id="details[@i].OrderId" name="details[@i].OrderId" class="form-control" type="hidden" value=@details[@i].OrderId>
+
+                        </td>
+                        @*@Html.DropDownList(i.ToString(), ViewBag.APPRAISALGROUPS as SelectList,string.Empty, new { @class = "form-control", @onchange = "valueChanged(this);", @name = i.ToString(), @value = details[i].APPRAISALGROUPS.APPRAISALGROUPID.ToString() })*@
+                        <td>
+                            @Html.Label(details[@i].ItemName.ToString(), new { @class = "form-control", type = "text", @readonly = "readonly", @style = "width:100px" })
+                        </td>
+                        <td>
+                            <input id="details[@i].OrderedQuantity" name="details[@i].OrderedQuantity" value=@details[@i].OrderedQuantity class="form-control" type="text" readonly="readonly">
+                        </td>
+                        <td>
+                            <input id="details[@i].ItemPrice" name="details[@i].ItemPrice" value=@details[@i].ItemPrice class="form-control" type="text" readonly="readonly">
+                        </td>
+                        <td>
+                            <input id="details[@i].OrderedPackage" name="details[@i].OrderedPackage" value=@details[@i].OrderedPackage class="form-control" type="text" readonly="readonly">
+                        </td>
+                        <td>
+                            <input id="details[@i].remaniedQuantitytoPackage" name="details[@i].remaniedQuantitytoPackage" value=@details[@i].remaniedQuantitytoPackage readonly="readonly" class="form-control" type="text" onchange="CalculateAmount()">
+                        </td>
+                        <td>
+                            <input id="details[@i].remaniedPriceToClose" name="details[@i].remaniedPriceToClose" value=@details[@i].remaniedPriceToClose readonly="readonly" class="form-control" type="text" onchange="CalculateAmount()">
+                        </td>
+                        <td>
+                            <input id="details[@i].close" name="details[@i].close" value=@details[@i].close  class="form-control" type="text" >
+                        </td>
+                        <hr />
+
+                    </tr>
+                    </div>
+                    }
+</tbody>
+    </table>
+
+
+</div>
+
+
+<script src="~/Scripts/Tokeninput/jquery.tokeninput.js" type="text/javascript"></script>
+<link href="~/Content/token-input.css" rel="stylesheet" />
+<script>
+
+    function valueChanged(_this){
+        var triggeredControlID = _this.name;
+        var dd =$(_this).val();
+        var name = "details[i].APPRAISALGROUPS.APPRAISALGROUPID";
+        name = name.replace("[i]","["+triggeredControlID+"]");
+        var target = document.getElementById(name);
+        $(target).val(dd);
+
+    }
+
+    (function ($) {
+
+        $('#fdetails').find("." + "list-add").click(function (event) {
+            handleAdd();
+        });
+        function handleAdd() {
+
+
+        };
+
+
+        $(fdetails).ready(function () {
+
+            //$(".js-example-basic-multiple").select2();
+
+            $('#fdetails').find("." + "list-add").click(function (event) {
+                handleAdd();
+            });
+
+
+            $("#fdetails").dynamiclist({
+                withEvents: true,
+
+
+            });
+
+
+        });
+
+        $('#APPRAISALGROUPS').change(function () {
+
+        });
+    })(jQuery);
+
+    //function handleAdd() {
+    //    AjaxCall('/CustomerGroupApplication/getSequnce');
+    //}
+    jQuery(function ($) {
+        $.validator.addMethod('date',
+        function (value, element) {
+            if (this.optional(element)) {
+                return true;
+            }
+
+            var ok = true;
+            try {
+                $.datepicker.parseDate('dd/mm/yy', value);
+            }
+            catch (err) {
+                ok = false;
+            }
+            return ok;
+        });
+    });
+
+
+    $("[Date='DatePicker']").datepicker({
+        dateFormat: "dd/mm/yy",
+        changeMonth: true,
+        changeYear: true
+    });
+
+
+    jQuery(function ($) {
+        $.validator.addMethod('date',
+            function (value, element) {
+                if (this.optional(element)) {
+                    return true;
+                }
+
+                var ok = true;
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                }
+                catch (err) {
+                    ok = false;
+                }
+                return ok;
+            });
+    });
+</script>

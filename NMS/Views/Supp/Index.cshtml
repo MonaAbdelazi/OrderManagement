@@ -1,0 +1,41 @@
+﻿
+@using KOrders.Core.Resources
+@using KOrders.Data
+@using GridMvc.Html
+@model IEnumerable<KOrders.Data.Vendor>
+
+@{
+    ViewBag.Title = CommonRes.Index;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@CommonRes.Index</h2>
+
+<div style="text-align: right;">
+     <form action="~/supp/create">
+          <button type="submit" class="btn btn-default alignPreview">
+               <span class="glyphicon glyphicon-new-window"></span>
+               @CommonRes.Button_CreateNew
+          </button>
+     </form>
+</div>
+
+
+
+
+<br />
+@Html.Grid(Model).Named("ordersGrid").Columns(columns =>
+{
+
+    columns.Add(model => model.Name).Sortable(true).SetWidth(50).Titled(NMSRes.Supp_Name);
+
+
+
+    //columns.Add(model => model.Country.Name).Sortable(true).SetWidth(50).Titled(NMSRes.Country.Name);
+
+    columns.Add().Encoded(false).Sanitized(false).RenderValueAs(o => Html.ActionLink(CommonRes.Link_Edit, "Edit", new { id = o.ID })).SetWidth(50);
+         columns.Add().Encoded(false).Sanitized(false).RenderValueAs(o => Html.ActionLink(CommonRes.Link_Delete, "Delete", new { id = o.ID })).SetWidth(50);
+
+}).WithPaging(10).Filterable().SetLanguage(CommonRes.Lang)
+
+

@@ -1,0 +1,306 @@
+﻿@using KOrders.Core.Resources
+@model KOrders.Data.RequestOrder
+
+@{
+    ViewBag.Title = CommonRes.Create;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@CommonRes.Create</h2>
+
+
+@using (Html.BeginForm("Create", "RequestOrder", FormMethod.Post, new { enctype = "multipart/form-data", @id = "formid" }))
+{
+    @Html.AntiForgeryToken()
+     <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title"> طلبية</h2>
+                </div>
+
+                <div class="panel-body">
+
+                    @Html.ValidationSummary(true)
+
+                    <hr />
+
+                    <div class="form-group row">
+
+                        @*<div class="col-lg-3">
+                            @Html.Label(NMSRes.Supp_Name)
+
+                            @Html.DropDownList("OrderId",null, CommonRes.SelectDropDown, new { @class = "form-control", @onchange = "getItems();" })
+                        </div>*@
+                        @*
+                      *@
+                        <div class="col-lg-3">
+                            @Html.Label(NMSRes.Supp_Name)
+
+                            @Html.DropDownListFor(m=>m.OrderId, null, CommonRes.SelectDropDown, new { @class = "form-control", @onchange = "getItems();" })
+                        </div>
+                        <div class="col-lg-3">
+                          الاسم كاملا
+
+                            @Html.TextBoxFor(m => m.RequesterName, null, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-3">
+رقم التلفون
+                            @Html.TextBoxFor(model => model.RequesterPhone, null, new { @class = "form-control", @maxlength = 12, onkeypress = "return ValidateNumber(event);", @style = "width:400px;", @tabindex = "23" })
+
+                            <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender1"  FilterType="Numbers" TargetControlID="RequesterPhone" ValidChars="1234567890+" BehaviorID="_content_FilteredTextBoxExtender1" />
+
+
+
+                        </div>
+                        <div class="col-lg-3">
+رقم المربع
+                            @Html.TextBoxFor(model => model.RequesterBlockNo, null, new { @class = "form-control", @maxlength = 2, onkeypress = "return ValidateNumber(event);", @style = "width:400px;", @tabindex = "23" })
+
+
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.Label(NMSRes.total_Price)
+
+                            @Html.TextBoxFor(m=>m.TotalPrice, null, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-3">
+صورة من الاشعار
+                            @*<img src="data:image;base64,@Model.ScanOfInvoice" />*@
+                          
+                              <input type="file" name="file" id="file" class="btn btn-warning" style="width: 100%;" />
+                           
+                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+         <div class="panel panel-light-blue">
+
+
+             <div class="panel-heading">
+
+                 <h2 class="panel-title">مكونات الطلبية</h2>
+             </div>
+
+
+             @*<div class="panel-body">
+                 <hr />
+
+                 @*<div class="form-group row">
+                     <div class="col-lg-3">
+                         @Html.Label(NMSRes.itemname)
+
+                         @Html.DropDownList("ItemId", null, CommonRes.SelectDropDown, new { @class = "form-control", @onchange = "getItems();" })
+                     </div>
+
+                     <div class="col-lg-3">
+                         سعر الكرتونة
+
+
+                         @Html.TextBox("Price", string.Empty, new { @class = "form-control", @onchange = "ItemSelected();" })
+                     </div>
+                   
+                     <div class="col-lg-3">
+                         سعر القطعة
+
+
+                         @Html.TextBox("ItemPrice", "0", new { @class = "form-control" ,@readonly= "readonly" })
+                     </div>*@
+                 @*</div>
+                 <div>
+                     <center>
+                         <p>
+                             <input type="button" value="@CommonRes.add" id="Add" class="btn btn-success hvr-bounce-in" onclick="add(this.id);" />
+                         </p>
+                     </center>
+                 </div>*@
+
+
+
+                 <div id="outputTable">
+
+                 </div>
+
+               
+
+
+
+             </div>
+         </div>
+
+
+                
+             
+                <div class="form-group">
+                    <center class="mgtp">
+                        <input type="submit" value="@CommonRes.Button_Save" class="btn btn-primary hvr-bounce-in" />
+                        &nbsp;
+                        @Html.ActionLink(CommonRes.BackToList, "Index", null, new { @class = "btn btn-warning hvr-bounce-in" })
+                    </center>
+                </div>
+}
+<div>
+    @Html.ActionLink(CommonRes.BackToList, "Index")
+</div>
+@section Scripts {
+    <script type="text/javascript">
+         $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+         function CalculateAmountANN() {
+             var length = $("#fdetails").find("." + "list-item").length;
+             var i = 0;
+             var total = 0;
+             while (i < length) {
+
+                 var Quantity = $("[name = 'details[" + i + "].Quantity']").val()
+                 var tot = Number(Quantity) ;
+                 if (tot != "" && tot < 0) {
+                     ShowFeedback("quantity should be greater than 1", "", "Error");
+                     return;
+                 }
+                 
+                 // var amtnew = amt.toString("{0:##,##.##}");
+                 // var newtotal = total.toString("{0:##,##.##}");
+                 total = Number(total) + Number(tot);
+                 if (total != "" && total > 1) {
+                     ShowFeedback("You can order only 1", "", "Error");
+                     return;
+                 }
+                 i += 1;
+             }
+             if (total != "" && total > 1) {
+                 ShowFeedback("You can order only 1", "", "Error");
+                 return;
+             }
+         }
+        function CalculateAmount() {
+            var length = $("#fdetails").find("." + "list-item").length;
+            var i = 0;
+            var total = 0;
+            while (i < length) {
+
+            var Quantity = $("[name = 'details[" + i + "].Quantity']").val()
+            var amt = $("[name = 'details[" + i + "].OrderItem.ItemPrice']").val();
+            var tot = Number(Quantity)*Number(amt);
+                if (amt != "" && amt < 0) {
+                    ShowFeedback("amount should be greater than 1", "", "Error");
+                    return;
+                }
+                // var amtnew = amt.toString("{0:##,##.##}");
+                // var newtotal = total.toString("{0:##,##.##}");
+                total = Number(total) + Number(tot);
+
+                i += 1;
+            }
+            $('#TotalPrice').val(total);
+        }
+        //function getItems() {
+
+        //    GetDropDownData({ VendorId: $('#VendorId').val() }, "/OpenOrder/VendorSelected", "ItemId", " ", true);
+
+        //}
+        function ItemSelected() {
+
+            var target = $('#TotalPrice');
+            var input = { ItemId: $('#ItemId').val(), Price: $('#Price').val()};
+            $.ajax({
+                url: '/OpenOrder/ItemSelected',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $('#ItemPrice').val(data);
+
+                },
+                error: function () {
+                }
+            });
+
+
+
+        }
+
+        function getItems() {
+
+            var target = $('#outputTable');
+            var input = { ItemId: $('#OrderId').val() };
+            $.ajax({
+                url: '/RequestOrder/getPartial',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    target.html(data);
+
+
+                },
+                error: function () {
+                }
+            });
+
+            @*$('#Close_Date').val(@Session["Close_Date"]);
+            $('#CloseTime').val(@Session["CloseTime"]);
+            $('#AccountNo').val(@Session["AccountNo"]);
+            $('#AccountName').val(@Session["AccountName"]);
+            $('#RecievePlace').val(@Session["RecievePlace"]);*@
+        }
+        function getOrderData() {
+            var OrderId = $('#OrderId').val();
+            var input = { OrderId: $('#OrderId').val() };
+
+            $.ajax({
+                url: '/OpenOrder/getOrderData',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $('#Close_Date').val(data.Close_Date.toString());
+                    $('#CloseTime').val(data.CloseTime.toString());
+                    $('#AccountNo').val(data.AccountNo.toString());
+                    $('#AccountName').val(data.AccountName.toString());
+                    $('#RecievePlace').val(data.RecievePlace.toString());
+                },
+                error: function () {
+                }
+            });
+        }
+        function add(_ddlDesc) {
+
+            var target = $('#outputTable');
+            var input = { ItemId: $('#ItemId').val(), Price: $('#Price').val(), ItemPrice: $('#ItemPrice').val() };
+            $.ajax({
+                url: '/OpenOrder/Add',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    target.html(data);
+
+                },
+                error: function () {
+                }
+            });
+
+            $('#ItemId').val("");
+            $('#Price').val("");
+            $('#ItemPrice').val("");
+
+        }
+
+        function ValidateNumber(e) {
+            var evt = (e) ? e : window.event;
+            var charCode = (evt.keyCode) ? evt.keyCode : evt.which;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        };
+    </script>
+}

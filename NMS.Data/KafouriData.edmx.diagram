@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7a424a0c801c4ce78f06a880210b2d64" Name="Diagram1">
+        <EntityTypeShape EntityType="kafouriModel.Vendor" Width="1.5" PointX="0.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="kafouriModel.VendorItem" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
+        <AssociationConnector Association="kafouriModel.FK_VendorItems_Vendor" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="kafouriModel.OrderItem" Width="1.5" PointX="5.25" PointY="3" />
+        <AssociationConnector Association="kafouriModel.FK_OrderItems_tems" />
+        <EntityTypeShape EntityType="kafouriModel.Order" Width="1.5" PointX="3" PointY="5.25" />
+        <AssociationConnector Association="kafouriModel.FK_OrderItems_Order" />
+        <AssociationConnector Association="kafouriModel.FK_Orders_Vendors" />
+        <EntityTypeShape EntityType="kafouriModel.RequestOrderItem" Width="1.5" PointX="7.5" PointY="5.375" />
+        <AssociationConnector Association="kafouriModel.FK_RequestOrderItems_tems" />
+        <EntityTypeShape EntityType="kafouriModel.RequestOrder" Width="1.5" PointX="5.25" PointY="7.25" />
+        <AssociationConnector Association="kafouriModel.FK_RequestOrder_Request" />
+        <AssociationConnector Association="kafouriModel.FK_RequestOrderItems_Request" />
+        <EntityTypeShape EntityType="kafouriModel.RequestedOrderInvoice" Width="1.5" PointX="7.5" PointY="9.125" />
+        <AssociationConnector Association="kafouriModel.FK_RequestedOrderInvoices_Requested" />
+        <EntityTypeShape EntityType="kafouriModel.ClosedItem" Width="1.5" PointX="10.5" PointY="7" />
+        <EntityTypeShape EntityType="kafouriModel.ClosedOrder" Width="1.5" PointX="5.25" PointY="12.25" />
+        <AssociationConnector Association="kafouriModel.FK_ClosedItems_ClosedI" />
+        <AssociationConnector Association="kafouriModel.FK_ClosedItems_OrderItems" />
+        <AssociationConnector Association="kafouriModel.FK_ClosedOrder_Orders" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

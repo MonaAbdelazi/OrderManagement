@@ -1,0 +1,380 @@
+﻿@using KOrders.Core.Resources
+@model KOrders.Data.RequestOrder
+
+@{
+    ViewBag.Title ="متابعة الطلبيات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+@using (Html.BeginForm("Follow", "RequestOrder", FormMethod.Post, new { enctype = "multipart/form-data", @id = "formid" }))
+{
+    @Html.AntiForgeryToken()
+     <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title"> طلبية</h2>
+                </div>
+                @Html.Label("",new { @id="lbl"})
+                <div class="panel-body">
+
+                    @Html.ValidationSummary(true)
+
+                    <hr />
+
+                    <div class="form-group row">
+
+                        @*<div class="col-lg-3">
+                            @Html.Label(NMSRes.Supp_Name)
+
+                            @Html.DropDownList("OrderId",null, CommonRes.SelectDropDown, new { @class = "form-control", @onchange = "getItems();" })
+                        </div>*@
+                        @*
+                      *@
+                        <div class="col-lg-3">
+                            @Html.Label(NMSRes.Supp_Name)
+
+                            @Html.DropDownListFor(m=>m.OrderId, null, CommonRes.SelectDropDown, new { @class = "form-control", @onchange = "getItems();" })
+                        </div>
+                        @Html.HiddenFor(i=>i.ID)
+                        <div>
+                            <center>
+                                <p>
+                                    <input type="submit" value="قفل الطبية" id="Close" class="btn btn-success hvr-bounce-in"  />
+                                </p>
+                                <p>
+                                    <input type="button" value="قفل للمراجعة" id="Review" onclick="ToReview();" class="btn btn-success hvr-bounce-in" />
+                                </p>
+                                <p>
+                                    <input type="button" value="أعادة فتح" id="Review" onclick="ReOpen();" class="btn btn-success hvr-bounce-in" />
+                                </p>
+                            </center>
+                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+         <div class="panel panel-light-blue">
+
+
+             <div class="panel-heading">
+
+                 <h2 class="panel-title"> الطلبات</h2>
+             </div>
+             <div>
+                 <center>
+                     <p>
+                         <input type="button" value="استخراج البيانات " id="Close" class="btn btn-success hvr-bounce-in" onclick="GenerateDetailsReport()" />
+                     </p>
+
+                     <p>
+                         <input type="button" value="استخراج البيانات ك اكسل شيت" id="Close" class="btn btn-success hvr-bounce-in" onclick="GenerateReport()" />
+                     </p>
+                     <p>
+                         <input type="button" value="استخراج الطلبيات" id="Close" class="btn btn-success hvr-bounce-in" onclick="GenerateAllReport()" />
+                     </p>
+                     <p>
+                         <input type="button" value=" استخراج الطلبيات المعدلة" id="Close" class="btn btn-success hvr-bounce-in" onclick="GenerateAllEditedReport()" />
+                     </p>
+                 </center>
+             </div>
+
+             @*<div class="panel-body">
+                 <hr />
+
+                 @*<div class="form-group row">
+                     <div class="col-lg-3">
+                         @Html.Label(NMSRes.itemname)
+
+                         @Html.DropDownList("ItemId", null, CommonRes.SelectDropDown, new { @class = "form-control", @onchange = "getItems();" })
+                     </div>
+
+                     <div class="col-lg-3">
+                         سعر الكرتونة
+
+
+                         @Html.TextBox("Price", string.Empty, new { @class = "form-control", @onchange = "ItemSelected();" })
+                     </div>
+                   
+                     <div class="col-lg-3">
+                         سعر القطعة
+
+
+                         @Html.TextBox("ItemPrice", "0", new { @class = "form-control" ,@readonly= "readonly" })
+                     </div>*@
+                 @*</div>
+                *@
+
+
+
+                 <div id="outputTable">
+
+                 </div>
+
+               
+
+
+
+             </div>
+         </div>
+
+
+                
+             
+                <div class="form-group">
+                    <center class="mgtp">
+                        &nbsp;
+                        @Html.ActionLink(CommonRes.BackToList, "Index", null, new { @class = "btn btn-warning hvr-bounce-in" })
+
+                    </center>
+                </div>
+}
+<div>
+    @Html.ActionLink(CommonRes.BackToList, "Index")
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        
+        function CloseItems() {
+
+            var target = $('#outputTable');
+            var input = { OrderId: $('#OrderId').val() };
+            $.ajax({
+                url: '/RequestOrder/CloseItems',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                   // if (data == 'OK') {
+                        $('#lbl').val("Order Items Changed");
+                        target.html(data);
+                   // }
+                },
+                error: function () {
+                }
+            });
+
+
+
+        }
+        function ToReview() {
+
+            var target = $('#outputTable');
+            var input = { OrderId: $('#OrderId').val()};
+            $.ajax({
+                url: '/RequestOrder/ToReview',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data == 'OK') {
+                        $('#lbl').val("Order changed to Under Review");
+                        target.html("");
+                    }
+                },
+                error: function () {
+                }
+            });
+
+
+
+        }
+        function ReOpen() {
+
+            var target = $('#outputTable');
+            var input = { OrderId: $('#OrderId').val() };
+            $.ajax({
+                url: '/RequestOrder/ReOpen',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data == 'OK') {
+                        $('#lbl').val("Order changed to Under Review");
+                        target.html("");
+                    }
+                },
+                error: function () {
+                }
+            });
+
+
+
+        }
+        function GenerateDetailsReport() {
+            // var Status = $('#Status').val().toString();
+            var OrderId = $('#OrderId').val();
+
+
+            ShowReport({ OrderId: OrderId }, "/RequestOrder/GenerateDetailsReport/", "rptDetdata", "@CommonRes.Lang");
+
+
+        }
+        function GenerateReport() {
+            // var Status = $('#Status').val().toString();
+            var OrderId = $('#OrderId').val();
+           
+
+            ShowReport({ OrderId: OrderId }, "/RequestOrder/generateData/", "rptdata", "@CommonRes.Lang");
+
+
+        }
+        function GenerateAllReport() {
+            // var Status = $('#Status').val().toString();
+            var OrderId = $('#OrderId').val();
+
+
+            ShowReport({ OrderId: OrderId }, "/RequestOrder/generateAllData/", "rptAlldata", "@CommonRes.Lang");
+
+
+        }
+            function GenerateAllEditedReport() {
+            // var Status = $('#Status').val().toString();
+            var OrderId = $('#OrderId').val();
+
+
+                ShowReport({ OrderId: OrderId }, "/RequestOrder/GenerateAllEditedReport/", "rptAllEditeddata", "@CommonRes.Lang");
+
+
+        }
+
+         $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+
+        function CalculateAmount() {
+            var length = $("#fdetails").find("." + "list-item").length;
+            var i = 0;
+            var total = 0;
+            while (i < length) {
+
+            var Quantity = $("[name = 'details[" + i + "].Quantity']").val()
+            var amt = $("[name = 'details[" + i + "].OrderItem.ItemPrice']").val();
+            var tot = Number(Quantity)*Number(amt);
+                if (amt != "" && amt < 0) {
+                    ShowFeedback("amount should be greater than 1", "", "Error");
+                    return;
+                }
+                // var amtnew = amt.toString("{0:##,##.##}");
+                // var newtotal = total.toString("{0:##,##.##}");
+                total = Number(total) + Number(tot);
+
+                i += 1;
+            }
+            $('#TotalPrice').val(total);
+        }
+        //function getItems() {
+
+        //    GetDropDownData({ VendorId: $('#VendorId').val() }, "/OpenOrder/VendorSelected", "ItemId", " ", true);
+
+        //}
+        function ItemSelected() {
+
+            var target = $('#TotalPrice');
+            var input = { ItemId: $('#ItemId').val(), Price: $('#Price').val()};
+            $.ajax({
+                url: '/OpenOrder/ItemSelected',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $('#ItemPrice').val(data);
+
+                },
+                error: function () {
+                }
+            });
+
+
+
+        }
+
+        function getItems() {
+
+            var target = $('#outputTable');
+            var input = { ItemId: $('#OrderId').val() };
+            $.ajax({
+                url: '/RequestOrder/getOrderInfo',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    target.html(data);
+
+
+                },
+                error: function () {
+                }
+            });
+
+            @*$('#Close_Date').val(@Session["Close_Date"]);
+            $('#CloseTime').val(@Session["CloseTime"]);
+            $('#AccountNo').val(@Session["AccountNo"]);
+            $('#AccountName').val(@Session["AccountName"]);
+            $('#RecievePlace').val(@Session["RecievePlace"]);*@
+        }
+        function getOrderData() {
+            var OrderId = $('#OrderId').val();
+            var input = { OrderId: $('#OrderId').val() };
+
+            $.ajax({
+                url: '/OpenOrder/getOrderData',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $('#Close_Date').val(data.Close_Date.toString());
+                    $('#CloseTime').val(data.CloseTime.toString());
+                    $('#AccountNo').val(data.AccountNo.toString());
+                    $('#AccountName').val(data.AccountName.toString());
+                    $('#RecievePlace').val(data.RecievePlace.toString());
+                },
+                error: function () {
+                }
+            });
+        }
+        function add(_ddlDesc) {
+
+            var target = $('#outputTable');
+            var input = { ItemId: $('#ItemId').val(), Price: $('#Price').val(), ItemPrice: $('#ItemPrice').val() };
+            $.ajax({
+                url: '/OpenOrder/Add',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    target.html(data);
+
+                },
+                error: function () {
+                }
+            });
+
+            $('#ItemId').val("");
+            $('#Price').val("");
+            $('#ItemPrice').val("");
+
+        }
+
+        function ValidateNumber(e) {
+            var evt = (e) ? e : window.event;
+            var charCode = (evt.keyCode) ? evt.keyCode : evt.which;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        };
+    </script>
+}

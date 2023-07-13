@@ -1,0 +1,171 @@
+﻿@using KOrders.Core.Resources
+@using KOrders.Data
+@model KOrders.Data.Vendor
+
+@{
+    ViewBag.Title = CommonRes.Edit;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var details = (List<KOrders.Data.VendorItem>)Session["items"];
+
+}
+
+<h2>@CommonRes.Edit</h2>
+
+
+
+@using (Html.BeginForm("Edit", "Supp", FormMethod.Post, new { enctype = "multipart/form-data", @id = "formid" }))
+{
+    @Html.AntiForgeryToken()
+    <form>
+
+
+        <div class="row">
+
+            <div class="col-lg-12">
+
+                <div class="panel panel-light-blue">
+
+
+                    <div class="panel-heading">
+                        <h2 class="panel-title">@MenuRes.suppliers</h2>
+                    </div>
+
+                    <div class="panel-body">
+
+                        @Html.ValidationSummary(true)
+
+                        <hr />
+
+                        <div class="form-group row">
+                            @Html.HiddenFor(m => m.ID)
+
+
+
+
+                            <div class="col-lg-3">
+                                @Html.Label(NMSRes.Name)
+
+                                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                            </div>
+
+                           
+                        </div>
+
+                        <div>
+                            <div class="col-lg-3">
+                                @Html.Label(NMSRes.itemname)
+                                @Html.TextBox("ItemName", string.Empty, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            Packaging
+
+                            @Html.TextBox("Packaging", string.Empty, htmlAttributes: new { @class = "form-control" })
+
+                            @*@id= "Name",*@
+                        </div>
+                        <div class="col-lg-3">
+                            No Per Package
+
+                            @Html.TextBox("NoPerPackage", string.Empty, htmlAttributes: new { @class = "form-control" })
+
+                            @*@id= "Name",*@
+                        </div>
+                        <input type="button" value="@CommonRes.add" id="Add" class="btn btn-success hvr-bounce-in" onclick="add(this.id);" />
+
+                        <div id="outputTableInit">
+                            @{Html.RenderPartial("~/Views/Supp/Partial/_ItemsAddPartial.cshtml", (List<KOrders.Data.VendorItem>)Model.VendorItems.ToList());}
+
+
+
+
+                        </div>
+
+                        <div id="outputTable">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <center class="mgtp">
+
+                                <input type="submit" value="@CommonRes.Button_Save" class="btn btn-primary hvr-bounce-in" />
+                                &nbsp;
+                                @Html.ActionLink(CommonRes.BackToList, "Index", null, new { @class = "btn btn-warning hvr-bounce-in" })
+
+                            </center>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </form>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+
+        function add(_ddlDesc) {
+
+
+
+
+            var target = $('#outputTable');
+            var input = { NoPerPackage: $('#NoPerPackage').val(), Packaging: $('#Packaging').val(), Name: $('#ItemName').val() };
+            $.ajax({
+                url: '/Supp/EditAdd',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    target.html(data);
+
+                },
+                error: function () {
+                }
+            });
+            $("#outputTableInit").hide();
+
+            $('#ItemName').val("");
+
+        }
+        function deleteItem(systemId) {
+
+            var target = $('#outputTable');
+            var input = { id: systemId };
+            $.ajax({
+                url: '/Supp/EditDelete',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    target.html(data);
+
+                },
+                error: function () {
+                }
+            });
+
+            $("#outputTableInit").hide();
+
+        }
+
+
+
+    </script>
+}
+
+
+

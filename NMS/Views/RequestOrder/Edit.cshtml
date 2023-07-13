@@ -1,0 +1,334 @@
+﻿@using KOrders.Core.Resources
+@model KOrders.Data.RequestOrder
+
+@{
+    ViewBag.Title = CommonRes.Edit;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+
+}
+
+
+<h2>@CommonRes.Edit</h2>
+
+
+@using (Html.BeginForm("Edit", "RequestOrder", FormMethod.Post, new { enctype = "multipart/form-data", @id = "formid" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title"> طلبية</h2>
+                </div>
+
+                <div class="panel-body">
+
+                    @Html.ValidationSummary(true)
+
+                    <hr />
+                    @Html.HiddenFor(m => m.OrderId);
+
+                    <div class="form-group row">
+
+                        @*<div class="col-lg-3">
+                @Html.Label(NMSRes.Supp_Name)
+
+                @Html.DropDownList("OrderId",null, CommonRes.SelectDropDown, new { @class = "form-control", @onchange = "getItems();" })
+            </div>*@
+                        @*
+                        *@
+                         <div class="col-lg-3">
+                            @Html.Label(NMSRes.Supp_Name)
+
+                            @Html.DropDownListFor(m => m.OrderId, null, CommonRes.SelectDropDown, new { @value = Model.OrderId, @class = "form-control", @onchange = "getItems();" ,@readonly="readonly"})
+                        </div>
+                        <div class="col-lg-3">
+                            الاسم كاملا
+
+                            @Html.TextBoxFor(m => m.RequesterName, null, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-3">
+                            رقم التلفون
+                            @Html.TextBoxFor(model => model.RequesterPhone, null, new { @class = "form-control", @maxlength = 12, onkeypress = "return ValidateNumber(event);", @style = "width:400px;", @tabindex = "23" })
+
+
+
+
+                        </div>
+                        <div class="col-lg-3">
+                            رقم المربع
+                            @Html.TextBoxFor(model => model.RequesterBlockNo, null, new { @class = "form-control", @maxlength = 2, onkeypress = "return ValidateNumber(event);", @style = "width:400px;", @tabindex = "23" })
+
+
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.Label(NMSRes.total_Price)
+
+                            @Html.TextBoxFor(m => m.TotalPrice, null, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-3">
+                            صورة من الاشعار
+                            @*<img src="@ViewBag.ImageData">*@
+                            @*<img src="data:image;base64,@System.Convert.ToBase64String(Model.ScanOfInvoice)" />*@
+                            @*<img src="@Url.Action("RetrieveImage", "RequestOrder", new { id = Model.ID })" alt="Person Image" />*@
+                            @*<img src='@Html.DisplayFor(model => model.ScanOfInvoice).ToHtmlString()' />*@
+                            @*@{
+                                var base64 = Convert.ToBase64String(Model.ScanOfInvoice);
+                                var imgSrc = String.Format("data:image/png;base64,{0}", base64);
+                            }
+
+                            <img src="@imgSrc" />*@
+                            @*<img src="data:image;base64,@System.Convert.ToBase64String(Model.ScanOfInvoice)" width="80" height="80" />*@
+                            @*<img src="~/images/profile/@Model.fileName" width="200" height="200">*@
+                            @{ Html.EnableClientValidation(false); }
+
+
+                        @*<input type="file" name="file" id="file" accept=".png,.jpg,.jpeg,.gif" />*@
+
+                            @*<img src="@Model.ScanOfInvoicePath" style="height:100px;width:100px;" />*@
+
+
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+
+            @*<center>
+                <p>
+                    <input type="submit" value="اضافة اشعار" id="Add" class="btn btn-success hvr-bounce-in" onclick="addInvoice(this.id);" />
+
+                </p>
+            </center>*@
+
+
+        </div>
+
+        <div id="outputTableInv">
+            <div class="panel-body">
+
+                @{Html.RenderPartial("~/Views/RequestOrder/Partial/_ItemsInvoicesPartial.cshtml", (List<KOrders.Data.RequestedOrderInvoice>)Model.RequestedOrderInvoices.ToList());}
+
+            </div>
+        </div>
+        <div id="outputTableInv1">
+            <div class="panel-body">
+
+
+            </div>
+        </div>
+        <div class="panel panel-light-blue">
+
+
+            <div class="panel-heading">
+
+                <h2 class="panel-title">مكونات الطلبية</h2>
+            </div>
+
+
+
+
+            <div id="outputTable">
+                <div class="panel-body">
+
+                    @{Html.RenderPartial("~/Views/RequestOrder/Partial/_ItemsAddPartial.cshtml", (List<KOrders.Data.RequestOrderItem>) Model.RequestOrderItems.ToList());}
+
+                </div>
+            </div>
+            
+
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+        <div class="form-group">
+            <center class="mgtp">
+                <input type="submit" value="@CommonRes.Button_Save" class="btn btn-primary hvr-bounce-in" />
+                &nbsp;
+                @Html.ActionLink(CommonRes.BackToList, "Index", null, new { @class = "btn btn-warning hvr-bounce-in" })
+            </center>
+        </div>
+}
+<div>
+    @Html.ActionLink(CommonRes.BackToList, "Index")
+</div>
+@section Scripts {
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () { $('.fileinput').fileinput(); })
+
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+
+        function CalculateAmount() {
+            var length = $("#fdetails").find("." + "list-item").length;
+            var i = 0;
+            var total = 0;
+            while (i < length) {
+
+                var Quantity = $("[name = 'details[" + i + "].Quantity']").val()
+                var amt = $("[name = 'details[" + i + "].OrderItem.ItemPrice']").val();
+                var tot = Number(Quantity)*Number(amt);
+                if (amt != "" && amt < 0) {
+                    ShowFeedback("amount should be greater than 1", "", "Error");
+                    return;
+                }
+                // var amtnew = amt.toString("{0:##,##.##}");
+                // var newtotal = total.toString("{0:##,##.##}");
+                total = Number(total) + Number(tot);
+
+                i += 1;
+            }
+            $('#TotalPrice').val(total);
+        }
+        //function getItems() {
+
+        //    GetDropDownData({ VendorId: $('#VendorId').val() }, "/OpenOrder/VendorSelected", "ItemId", " ", true);
+
+        //}
+
+
+
+        function ItemSelected() {
+
+            var target = $('#TotalPrice');
+            var input = { ItemId: $('#ItemId').val(), Price: $('#Price').val()};
+            $.ajax({
+                url: '/OpenOrder/ItemSelected',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $('#ItemPrice').val(data);
+
+                },
+                error: function () {
+                }
+            });
+
+
+
+        }
+
+        function getItems() {
+
+            var target = $('#outputTable');
+            var input = { ItemId: $('#OrderId').val() };
+            $.ajax({
+                url: '/RequestOrder/getPartial',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    target.html(data);
+
+
+                },
+                error: function () {
+                }
+            });
+
+            @*$('#Close_Date').val(@Session["Close_Date"]);
+            $('#CloseTime').val(@Session["CloseTime"]);
+            $('#AccountNo').val(@Session["AccountNo"]);
+            $('#AccountName').val(@Session["AccountName"]);
+            $('#RecievePlace').val(@Session["RecievePlace"]);*@
+        }
+        function getOrderData() {
+            var OrderId = $('#OrderId').val();
+            var input = { OrderId: $('#OrderId').val() };
+
+            $.ajax({
+                url: '/OpenOrder/getOrderData',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $('#Close_Date').val(data.Close_Date.toString());
+                    $('#CloseTime').val(data.CloseTime.toString());
+                    $('#AccountNo').val(data.AccountNo.toString());
+                    $('#AccountName').val(data.AccountName.toString());
+                    $('#RecievePlace').val(data.RecievePlace.toString());
+                },
+                error: function () {
+                }
+            });
+        }
+        function addInvoice(_ddlDesc) {
+            var target = $('#outputTableInv1');
+            $('#outputTableInv').hide();
+            var file_name = $("#file").val();
+            var fileName = $("#file").val();
+            var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+            var file = $("#file").get(0).files[0];//) prop("file");
+            var id=@Model.OrderId;
+            var ii = $("#OrderId").val();
+
+            var input = { fileName: fileName, file: file ,id:ii};
+            $.ajax({
+                url: '/RequestOrder/AddInvoice',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8;multipart/form-data",
+                success: function (data) {
+                    target.html(data);
+
+                },
+                error: function () {
+                }
+            });
+
+
+
+        }
+        function add(_ddlDesc) {
+
+            var target = $('#outputTable');
+            var input = { ItemId: $('#ItemId').val(), Price: $('#Price').val(), ItemPrice: $('#ItemPrice').val() };
+            $.ajax({
+                url: '/OpenOrder/Add',
+                type: "POST",
+                data: JSON.stringify(input),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    target.html(data);
+
+                },
+                error: function () {
+                }
+            });
+
+            $('#ItemId').val("");
+            $('#Price').val("");
+            $('#ItemPrice').val("");
+
+        }
+
+        function ValidateNumber(e) {
+            var evt = (e) ? e : window.event;
+            var charCode = (evt.keyCode) ? evt.keyCode : evt.which;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        };
+    </script>
+}
